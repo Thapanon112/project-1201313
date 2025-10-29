@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านขายไก่สดออนไลน์</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        header {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav {
+            background: #c0392b;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        nav a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: #e74c3c;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .quantity-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            padding: 0.25rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .checkout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin: 1rem 0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐔 ร้านขายไก่สดออนไลน์</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#" class="nav-link active" data-section="home">หน้าแรก</a></li>
+            <li><a href="#" class="nav-link" data-section="products">สินค้า</a></li>
+            <li><a href="#" class="nav-link" data-section="cart">ตะกร้าสินค้า</a></li>
+            <li><a href="#" class="nav-link" data-section="orders">คำสั่งซื้อ</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- หน้าแรก -->
+        <section id="home" class="section active">
+            <h2>ยินดีต้อนรับ</h2>
+            <p>ร้านขายไก่สดคุณภาพดี ราคายุติธรรม</p>
+            <button onclick="showSection('products')" style="background:#e74c3c; color:white; border:none; padding:1rem 2rem; border-radius:5px; margin-top:1rem; cursor:pointer;">
+                ดูสินค้าทั้งหมด
+            </button>
+        </section>
+
+        <!-- สินค้า -->
+        <section id="products" class="section">
+            <h2>สินค้าทั้งหมด</h2>
+            <div id="productsLoading" class="loading">กำลังโหลดสินค้า...</div>
+            <div class="products-grid" id="productsGrid"></div>
+            <div id="productsError" class="error" style="display:none;"></div>
+        </section>
+
+        <!-- ตะกร้าสินค้า -->
+        <section id="cart" class="section">
+            <h2>ตะกร้าสินค้า</h2>
+            <div id="cartItems">
+                <p>ตะกร้าสินค้าว่าง</p>
+            </div>
+            <div id="cartTotal">รวม: 0 บาท</div>
+            <button class="checkout-btn" onclick="showCheckoutModal()">สั่งซื้อ</button>
+        </section>
+
+        <!-- คำสั่งซื้อ -->
+        <section id="orders" class="section">
+            <h2>ประวัติคำสั่งซื้อ</h2>
+            <div id="ordersLoading" class="loading">กำลังโหลดคำสั่งซื้อ...</div>
+            <div id="ordersList"></div>
+            <div id="ordersError" class="error" style="display:none;"></div>
+        </section>
+    </main>
+
+    <!-- Modal สำหรับสั่งซื้อ -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>ข้อมูลการสั่งซื้อ</h2>
+            <form onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล:</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>เบอร์โทรศัพท์:</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <button type="submit" class="submit-btn">ยืนยันการสั่งซื้อ</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ตัวแปร global
+        let chickens = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let orders = [];
+        const API_BASE = 'http://localhost:8080/api';
+
+        // เมื่อโหลดหน้าเว็บ
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('หน้าเว็บโหลดแล้ว');
+            initNavigation();
+            init();
+        });
+
+        // ฟังก์ชันเริ่มต้น
+        async function init() {
+            await loadChickens();
+            await loadOrders();
+            renderCart();
+        }
+
+        // ระบบ Navigation
+        function initNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    showSection(sectionId);
+                    
+                    // อัพเดต active state
+                    document.querySelectorAll('.nav-link').forEach(l => {
+                        l.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        function showSection(sectionId) {
+            // ซ่อนทุก section
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // แสดง section ที่เลือก
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        }
+
+        // โหลดข้อมูลจาก API
+        async function loadChickens() {
+            try {
+                document.getElementById('productsLoading').style.display = 'block';
+                document.getElementById('productsError').style.display = 'none';
+                
+                const response = await fetch(`${API_BASE}/chickens`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                chickens = await response.json();
+                console.log('โหลดสินค้าสำเร็จ:', chickens);
+                renderProducts();
+                
+            } catch (error) {
+                console.error('Error loading chickens:', error);
+                document.getElementById('productsError').style.display = 'block';
+                document.getElementById('productsError').innerHTML = `
+                    ไม่สามารถโหลดสินค้าได้: ${error.message}<br>
+                    <small>ตรวจสอบว่า Backend กำลังทำงานที่ http://localhost:8080</small>
+                `;
+            } finally {
+                document.getElementById('productsLoading').style.display = 'none';
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                document.getElementById('ordersLoading').style.display = 'block';
+                document.getElementById('ordersError').style.display = 'none';
+                
+                const response = await fetch(`${API_BASE}/orders`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                orders = await response.json();
+                console.log('โหลดคำสั่งซื้อสำเร็จ:', orders);
+                renderOrders();
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersError').style.display = 'block';
+                document.getElementById('ordersError').innerHTML = `
+                    ไม่สามารถโหลดคำสั่งซื้อได้: ${error.message}
+                `;
+            } finally {
+                document.getElementById('ordersLoading').style.display = 'none';
+            }
+        }
+
+        // แสดงสินค้า
+        function renderProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+
+            chickens.forEach(chicken => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">🐔</div>
+                    <h3>${chicken.name}</h3>
+                    <p>ประเภท: ${chicken.type}</p>
+                    <p>${chicken.description}</p>
+                    <div class="product-price">${chicken.price} บาท</div>
+                    <p>คงเหลือ: ${chicken.stock} ตัว</p>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="changeQuantity(${chicken.id}, -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${chicken.id}" value="1" min="1" max="${chicken.stock}">
+                        <button class="quantity-btn" onclick="changeQuantity(${chicken.id}, 1)">+</button>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(${chicken.id})">เพิ่มในตะกร้า</button>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        function changeQuantity(chickenId, change) {
+            const input = document.getElementById(`qty-${chickenId}`);
+            let newValue = parseInt(input.value) + change;
+            const chicken = chickens.find(c => c.id === chickenId);
+            
+            if (newValue < 1) newValue = 1;
+            if (newValue > chicken.stock) {
+                newValue = chicken.stock;
+            }
+            
+            input.value = newValue;
+        }
+
+        function addToCart(chickenId) {
+            const input = document.getElementById(`qty-${chickenId}`);
+            const quantity = parseInt(input.value);
+            const chicken = chickens.find(c => c.id === chickenId);
+
+            if (!chicken) {
+                alert('ไม่พบสินค้า');
+                return;
+            }
+
+            if (quantity > chicken.stock) {
+                alert('จำนวนสินค้าไม่พอ');
+                return;
+            }
+
+            // ตรวจสอบว่ามีในตะกร้าแล้วหรือไม่
+            const existingItem = cart.find(item => item.chicken.id === chickenId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    chicken: chicken,
+                    quantity: quantity
+                });
+            }
+
+            saveCart();
+            renderCart();
+            alert(`เพิ่ม ${chicken.name} จำนวน ${quantity} ตัว ในตะกร้าแล้ว`);
+            
+            // รีเซ็ตจำนวน
+            input.value = 1;
+        }
+
+        function removeFromCart(chickenId) {
+            cart = cart.filter(item => item.chicken.id !== chickenId);
+            saveCart();
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p>ตะกร้าสินค้าว่าง</p>';
+                cartTotal.textContent = 'รวม: 0 บาท';
+                return;
+            }
+
+            let total = 0;
+            let itemsHTML = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.chicken.price * item.quantity;
+                total += itemTotal;
+                
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h3>${item.chicken.name}</h3>
+                            <p>${item.quantity} ตัว × ${item.chicken.price} บาท = ${itemTotal} บาท</p>
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${item.chicken.id})">ลบ</button>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = itemsHTML;
+            cartTotal.textContent = `รวม: ${total} บาท`;
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function showCheckoutModal() {
+            if (cart.length === 0) {
+                alert('กรุณาเพิ่มสินค้าในตะกร้าก่อนสั่งซื้อ');
+                return;
+            }
+            document.getElementById('checkoutModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        async function submitOrder(event) {
+            event.preventDefault();
+            
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+            
+            if (!customerName || !customerPhone) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert('กรุณาเพิ่มสินค้าในตะกร้าก่อนสั่งซื้อ');
+                return;
+            }
+
+            const orderData = {
+                customerName: customerName,
+                customerPhone: customerPhone,
+                items: cart.map(item => ({
+                    chickenId: item.chicken.id,
+                    quantity: item.quantity
+                }))
+            };
+
+            try {
+                console.log('ส่งคำสั่งซื้อ:', orderData);
+                
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const order = await response.json();
+                console.log('คำสั่งซื้อสำเร็จ:', order);
+                
+                alert(`สั่งซื้อสำเร็จ! เลขที่คำสั่งซื้อ: ${order.id}`);
+                
+                // ล้างตะกร้า
+                cart = [];
+                saveCart();
+                renderCart();
+                closeModal();
+                
+                // โหลดข้อมูลใหม่จาก server
+                await loadChickens();
+                await loadOrders();
+                
+                // รีเซ็ตฟอร์ม
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerPhone').value = '';
+                
+                // ไปที่หน้าคำสั่งซื้อ
+                showSection('orders');
+                document.querySelector('[data-section="orders"]').classList.add('active');
+                document.querySelector('[data-section="cart"]').classList.remove('active');
+                
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                alert(`ไม่สามารถสั่งซื้อได้: ${error.message}\n\nตรวจสอบว่า Backend กำลังทำงานและ Database พร้อมใช้งาน`);
+            }
+        }
+
+        function renderOrders() {
+            const ordersList = document.getElementById('ordersList');
+
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<p>ยังไม่มีคำสั่งซื้อ</p>';
+                return;
+            }
+
+            let ordersHTML = '';
+
+            orders.forEach(order => {
+                const orderDate = new Date(order.orderDate).toLocaleDateString('th-TH');
+                
+                ordersHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h3>คำสั่งซื้อ #${order.id}</h3>
+                            <p><strong>ลูกค้า:</strong> ${order.customerName}</p>
+                            <p><strong>โทร:</strong> ${order.customerPhone}</p>
+                            <p><strong>วันที่:</strong> ${orderDate}</p>
+                            <p><strong>สถานะ:</strong> ${order.status}</p>
+                            <p><strong>ยอดรวม:</strong> ${order.totalAmount} บาท</p>
+                            <div style="margin-top: 0.5rem;">
+                                <strong>รายการสินค้า:</strong>
+                                ${order.items.map(item => `
+                                    <div>• ${item.chicken.name} - ${item.quantity} ตัว × ${item.price} บาท</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            ordersList.innerHTML = ordersHTML;
+        }
+    </script>
+</body>
+</html>
