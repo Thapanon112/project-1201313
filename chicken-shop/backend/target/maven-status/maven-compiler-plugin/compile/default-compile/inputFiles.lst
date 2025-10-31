@@ -1,0 +1,17 @@
+D:\chicken-shop\backend\src\main\java\com\chickenshop\controller\HomeController.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\dto\SalesReportDTO.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\dto\OrderResponseDTO.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\controller\OrderController.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\controller\CustomErrorController.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\dto\OrderItemDTO.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\repository\ChickenRepository.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\controller\AdminController.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\controller\ChickenController.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\entity\Chicken.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\config\CorsConfig.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\repository\OrderRepository.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\ChickenshopApplication.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\entity\Order.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\entity\OrderItem.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\config\DataInitializer.java
+D:\chicken-shop\backend\src\main\java\com\chickenshop\config\WebConfig.java

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการสินค้า</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/admin">🐔 ร้านไก่สด - จัดการสินค้า</a>
+            <a href="/admin" class="btn btn-light">กลับไปแดชบอร์ด</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>จัดการสินค้า</h1>
+        
+        <div class="alert alert-info">
+            <strong>หมายเหตุ:</strong> ระบบกำลังพัฒนา ส่วนจัดการสินค้าจะพร้อมใช้งานเร็วๆ นี้
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5>สินค้าตัวอย่างในระบบ</h5>
+                <ul>
+                    <li>ไก่เนื้อสด - 100 บาท (คงเหลือ: 50 ตัว)</li>
+                    <li>ไก่บ้านพื้นเมือง - 110 บาท (คงเหลือ: 30 ตัว)</li>
+                    <li>ไก่เบญจาพันธุ์แท้ - 150 บาท (คงเหลือ: 20 ตัว)</li>
+                    <li>ไก่ดำพรีเมี่ยม - 200 บาท (คงเหลือ: 15 ตัว)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="/admin" class="btn btn-secondary">กลับไปแดชบอร์ด</a>
+            <a href="/api/chickens" class="btn btn-info" target="_blank">ทดสอบ API สินค้า</a>
+        </div>
+    </div>
+</body>
+</html>

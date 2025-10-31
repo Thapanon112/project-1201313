@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านขายไก่สดออนไลน์</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        header {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav {
+            background: #c0392b;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        nav a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #ecf0f1;
+        }
+
+        .product-image.fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .product-type {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #555;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            color: #e74c3c;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .product-stock {
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+
+        .quantity-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #2980b9;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #219652;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-item-info h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-info p {
+            color: #7f8c8d;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .checkout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #c0392b;
+        }
+
+        .checkout-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+        .form-group {
+            margin: 1.5rem 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #219652;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .home-hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .home-hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .home-hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: white;
+            color: #e74c3c;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .modal-content {
+                margin: 5% auto;
+                width: 90%;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .retry-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .retry-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+        }
+
+        .retry-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        .order-card {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .order-items {
+            margin: 1rem 0;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .sort-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .sort-btn.active {
+            background: #3498db;
+        }
+
+        .sort-btn:hover {
+            background: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐔 ร้านขายไก่สดออนไลน์</h1>
+        <p>ไก่สดใหม่ทุกวัน คุณภาพพรีเมียม ราคายุติธรรม</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#" class="nav-link active" data-section="home">🏠 หน้าแรก</a></li>
+            <li><a href="#" class="nav-link" data-section="products">🛒 สินค้า</a></li>
+            <li><a href="#" class="nav-link" data-section="cart">🛒 ตะกร้าสินค้า</a></li>
+            <li><a href="#" class="nav-link" data-section="orders">📋 คำสั่งซื้อ</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- หน้าแรก -->
+        <section id="home" class="section active">
+            <div class="home-hero">
+                <h2>ยินดีต้อนรับสู่ร้านขายไก่สดออนไลน์</h2>
+                <p>ไก่สดใหม่จากฟาร์มคุณภาพ ปลอดสารพิษ เนื้อแน่นรสชาติดี</p>
+                <button class="cta-button" onclick="showSection('products')">
+                    🛒 สั่งซื้อไก่สดตอนนี้
+                </button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                    <h3>จัดส่งฟรี</h3>
+                    <p>เมื่อซื้อเกิน 500 บาท</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+                    <h3>คุณภาพพรีเมียม</h3>
+                    <p>ไก่สดใหม่ทุกวัน</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💯</div>
+                    <h3>รับประกันคุณภาพ</h3>
+                    <p>คืนเงินภายใน 7 วัน</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- สินค้า -->
+        <section id="products" class="section">
+            <h2>🛒 สินค้าทั้งหมด</h2>
+            <p style="color: #7f8c8d; margin-bottom: 1rem;">เลือกไก่สดคุณภาพดีจากฟาร์มของเรา</p>
+            
+            <div id="productsLoading" class="loading">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+                กำลังโหลดสินค้า...
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+            <div id="productsError" class="error" style="display:none;"></div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button onclick="loadChickens()" class="cta-button" style="background: #3498db;">
+                    🔄 โหลดสินค้าใหม่
+                </button>
+                <button onclick="useSampleData()" class="cta-button" style="background: #9b59b6; margin-left: 10px;">
+                    🎯 ใช้ข้อมูลตัวอย่าง
+                </button>
+            </div>
+        </section>
+
+        <!-- ตะกร้าสินค้า -->
+        <section id="cart" class="section">
+            <h2>🛒 ตะกร้าสินค้า</h2>
+            <div id="cartItems">
+                <div class="empty-state">
+                    <div class="icon">🛒</div>
+                    <h3>ตะกร้าสินค้าว่าง</h3>
+                    <p>กรุณาเลือกสินค้าจากหน้ารายการสินค้า</p>
+                    <button class="cta-button" onclick="showSection('products')" style="margin-top: 1rem;">
+                        ดูสินค้าทั้งหมด
+                    </button>
+                </div>
+            </div>
+            <div id="cartTotal" class="cart-total"></div>
+            <button class="checkout-btn" onclick="showCheckoutModal()" id="checkoutButton" disabled>สั่งซื้อ</button>
+        </section>
+
+        <!-- คำสั่งซื้อ -->
+        <section id="orders" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0;">📋 ประวัติคำสั่งซื้อ</h2>
+                <button onclick="loadOrders()" class="cta-button" style="background: #3498db; padding: 0.5rem 1rem;">
+                    🔄 โหลดใหม่
+                </button>
+            </div>
+
+            <!-- ✅ เพิ่ม: ปุ่มเลือกการเรียงลำดับ -->
+            <div class="sort-controls">
+                <span style="font-weight: bold; color: #2c3e50;">เรียงตาม:</span>
+                <button class="sort-btn active" onclick="sortOrders('id', 'desc')">🔢 หมายเลข (ใหม่→เก่า)</button>
+                <button class="sort-btn" onclick="sortOrders('id', 'asc')">🔢 หมายเลข (เก่า→ใหม่)</button>
+                <button class="sort-btn" onclick="sortOrders('date', 'desc')">📅 วันที่ (ใหม่→เก่า)</button>
+                <button class="sort-btn" onclick="sortOrders('date', 'asc')">📅 วันที่ (เก่า→ใหม่)</button>
+            </div>
+            
+            <div id="ordersLoading" class="loading">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+                กำลังโหลดคำสั่งซื้อ...
+            </div>
+            <div id="ordersList"></div>
+            <div id="ordersError" class="error" style="display:none;"></div>
+        </section>
+    </main>
+
+    <!-- Modal สำหรับสั่งซื้อ -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📋 ข้อมูลการสั่งซื้อ</h2>
+            <form onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label>👤 ชื่อ-นามสกุล:</label>
+                    <input type="text" id="customerName" required placeholder="กรุณากรอกชื่อ-นามสกุล">
+                </div>
+                <div class="form-group">
+                    <label>📞 เบอร์โทรศัพท์:</label>
+                    <input type="tel" id="customerPhone" required placeholder="กรุณากรอกเบอร์โทรศัพท์">
+                </div>
+                <div id="orderSummary" style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                    <strong>รายการสั่งซื้อ:</strong>
+                    <div id="orderItemsList"></div>
+                </div>
+                <button type="submit" class="submit-btn">✅ ยืนยันการสั่งซื้อ</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ตัวแปร global
+        let chickens = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let orders = [];
+        let currentSort = { field: 'id', direction: 'desc' }; // ✅ เพิ่ม: เก็บสถานะการเรียงลำดับปัจจุบัน
+        const API_BASE = 'http://localhost:8080/api';
+
+        // ข้อมูลตัวอย่างถ้า API ไม่ทำงาน
+        const sampleChickens = [
+            {
+                id: 1,
+                name: "ไก่เนื้อสด",
+                type: "ไก่เนื้อ", 
+                price: 100.0,
+                description: "ไก่เนื้อสดคุณภาพดี เนื้อแน่น",
+                imageUrl: "1.jpg",
+                stock: 50
+            },
+            {
+                id: 2,
+                name: "ไก่บ้านพื้นเมือง",
+                type: "ไก่บ้าน",
+                price: 110.0,
+                description: "ไก่บ้านเลี้ยงอิสระ เนื้อแน่นรสชาติดี",
+                imageUrl: "kaiban.jpg",
+                stock: 30
+            },
+            {
+                id: 3,
+                name: "ไก่เบญจาพันธุ์แท้", 
+                type: "ไก่เบญจา",
+                price: 150.0,
+                description: "ไก่เบญจาพันธุ์แท้ เนื้ออร่อย",
+                imageUrl: "benja.jpg",
+                stock: 20
+            },
+            {
+                id: 4,
+                name: "ไก่ดำพรีเมี่ยม",
+                type: "ไก่เนื้อ",
+                price: 200.0,
+                description: "ไก่ดำเกรดพรีเมี่ยม",
+                imageUrl: "dum.jpg", 
+                stock: 15
+            }
+        ];
+
+        // เมื่อโหลดหน้าเว็บ
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 หน้าเว็บโหลดแล้ว');
+            console.log('🔧 API Base URL:', API_BASE);
+            initNavigation();
+            init();
+        });
+
+        // ฟังก์ชันเริ่มต้น
+        async function init() {
+            console.log('🔧 เริ่มต้นระบบ...');
+            try {
+                await loadChickens();
+                renderCart();
+            } catch (error) {
+                console.error('❌ Error in init:', error);
+            }
+        }
+
+        // ระบบ Navigation
+        function initNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    showSection(sectionId);
+                });
+            });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // ✅ เพิ่ม: โหลดข้อมูลเมื่อเปลี่ยนหน้า
+                if (sectionId === 'orders') {
+                    console.log('🔄 โหลดคำสั่งซื้ออัตโนมัติเมื่อเปลี่ยนหน้า...');
+                    loadOrders();
+                }
+            }
+            
+            // ✅ เพิ่ม: อัพเดท navigation active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // ✅ เพิ่ม: ฟังก์ชันเรียงลำดับคำสั่งซื้อ
+        function sortOrders(field, direction) {
+            console.log(`🔄 เรียงลำดับคำสั่งซื้อตาม ${field} ${direction}`);
+            
+            // อัพเดทสถานะการเรียงลำดับปัจจุบัน
+            currentSort.field = field;
+            currentSort.direction = direction;
+            
+            // อัพเดทปุ่ม active
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // หาปุ่มที่ถูกกดและตั้งค่าเป็น active
+            const activeBtn = Array.from(document.querySelectorAll('.sort-btn')).find(btn => 
+                btn.textContent.includes(field === 'id' ? 'หมายเลข' : 'วันที่') && 
+                btn.textContent.includes(direction === 'desc' ? 'ใหม่→เก่า' : 'เก่า→ใหม่')
+            );
+            
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            // เรียงลำดับ orders
+            orders.sort((a, b) => {
+                let aValue, bValue;
+                
+                if (field === 'id') {
+                    // เรียงตามหมายเลขคำสั่งซื้อ
+                    aValue = a.id || a.orderId || 0;
+                    bValue = b.id || b.orderId || 0;
+                } else {
+                    // เรียงตามวันที่
+                    const aDateField = a.orderDate || a.createdAt || a.date;
+                    const bDateField = b.orderDate || b.createdAt || b.date;
+                    aValue = aDateField ? new Date(aDateField) : new Date(0);
+                    bValue = bDateField ? new Date(bDateField) : new Date(0);
+                }
+                
+                if (direction === 'desc') {
+                    return bValue - aValue; // ใหม่→เก่า
+                } else {
+                    return aValue - bValue; // เก่า→ใหม่
+                }
+            });
+            
+            // เรนเดอร์ใหม่
+            renderOrders();
+            
+            showNotification(`เรียงลำดับตาม${field === 'id' ? 'หมายเลข' : 'วันที่'} (${direction === 'desc' ? 'ใหม่→เก่า' : 'เก่า→ใหม่'})`, 'info');
+        }
+
+        // โหลดข้อมูลจาก API
+        async function loadChickens() {
+            try {
+                console.log('🔄 กำลังโหลดข้อมูลสินค้าจาก API...');
+                document.getElementById('productsLoading').style.display = 'block';
+                document.getElementById('productsError').style.display = 'none';
+                
+                const response = await fetch(`${API_BASE}/chickens`);
+                console.log('📡 Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                chickens = await response.json();
+                console.log('✅ โหลดสินค้าสำเร็จจาก API:', chickens);
+                
+            } catch (error) {
+                console.error('❌ ไม่สามารถโหลดจาก API ได้:', error);
+                console.log('🔄 ใช้ข้อมูลตัวอย่างแทน');
+                chickens = sampleChickens;
+                
+                document.getElementById('productsError').style.display = 'block';
+                document.getElementById('productsError').innerHTML = `
+                    <strong>เชื่อมต่อกับเซิร์ฟเวอร์ไม่ได้:</strong> ใช้ข้อมูลตัวอย่างชั่วคราว<br>
+                    <small>${error.message}</small>
+                    <div class="retry-buttons">
+                        <button onclick="loadChickens()" style="background: #3498db; color: white;">
+                            🔄 ลองโหลดใหม่
+                        </button>
+                        <button onclick="useSampleData()" style="background: #27ae60; color: white;">
+                            🎯 ใช้ข้อมูลตัวอย่าง
+                        </button>
+                    </div>
+                `;
+            } finally {
+                renderProducts();
+                document.getElementById('productsLoading').style.display = 'none';
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                console.log('📋 กำลังโหลดคำสั่งซื้อ...');
+                document.getElementById('ordersLoading').style.display = 'block';
+                document.getElementById('ordersError').style.display = 'none';
+                document.getElementById('ordersList').innerHTML = '';
+                
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('📡 Orders Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Orders Error response:', errorText);
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                }
+                
+                const responseData = await response.json();
+                console.log('✅ โหลดคำสั่งซื้อสำเร็จ:', responseData);
+                
+                // ✅ แก้ไข: ตรวจสอบโครงสร้างข้อมูล
+                if (Array.isArray(responseData)) {
+                    orders = responseData;
+                } else if (responseData.orders && Array.isArray(responseData.orders)) {
+                    orders = responseData.orders;
+                } else if (responseData.data && Array.isArray(responseData.data)) {
+                    orders = responseData.data;
+                } else {
+                    console.warn('⚠️ โครงสร้างข้อมูลคำสั่งซื้อไม่เป็นที่รู้จัก:', responseData);
+                    orders = [];
+                }
+                
+                // ✅ เรียกฟังก์ชันเรียงลำดับตามค่าปัจจุบัน
+                sortOrders(currentSort.field, currentSort.direction);
+                
+            } catch (error) {
+                console.error('❌ Error loading orders:', error);
+                document.getElementById('ordersError').style.display = 'block';
+                document.getElementById('ordersError').innerHTML = `
+                    <strong>ไม่สามารถโหลดคำสั่งซื้อได้</strong><br>
+                    <small>${error.message}</small>
+                    <div class="retry-buttons">
+                        <button onclick="loadOrders()" style="background: #3498db; color: white;">
+                            🔄 ลองโหลดใหม่
+                        </button>
+                        <button onclick="testOrdersAPI()" style="background: #e74c3c; color: white;">
+                            🧪 ทดสอบ API
+                        </button>
+                    </div>
+                `;
+            } finally {
+                document.getElementById('ordersLoading').style.display = 'none';
+            }
+        }
+
+        // แสดงสินค้า
+        function renderProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+
+            console.log('🎨 เรนเดอร์สินค้า, จำนวน:', chickens.length);
+
+            if (chickens.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">😔</div>
+                        <h3>ไม่มีสินค้าในระบบ</h3>
+                        <p>กรุณาตรวจสอบการเชื่อมต่อกับเซิร์ฟเวอร์</p>
+                        <button onclick="loadChickens()" class="cta-button" style="margin-top: 1rem;">
+                            โหลดใหม่
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            chickens.forEach(chicken => {
+                console.log('📦 สร้างการ์ดสินค้า:', chicken.name);
+                
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // สร้าง URL รูปภาพ
+                let imageUrl = '';
+                if (chicken.imageUrl && chicken.imageUrl.trim() !== '') {
+                    if (chicken.imageUrl.startsWith('http')) {
+                        imageUrl = chicken.imageUrl;
+                    } else {
+                        // ใช้รูปจาก Frontend folder
+                        imageUrl = `images/${chicken.imageUrl}`;
+                    }
+                }
+                
+                let imageHTML = '';
+                if (imageUrl) {
+                    imageHTML = `
+                        <div class="product-image-container">
+                            <img src="${imageUrl}" alt="${chicken.name}" class="product-image" 
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'product-image fallback\\'>🐔</div>';">
+                        </div>
+                    `;
+                } else {
+                    imageHTML = `
+                        <div class="product-image-container">
+                            <div class="product-image fallback">🐔</div>
+                        </div>
+                    `;
+                }
+                
+                productCard.innerHTML = `
+                    ${imageHTML}
+                    <div class="product-name">${chicken.name}</div>
+                    <div class="product-type">ประเภท: ${chicken.type}</div>
+                    <div class="product-description">${chicken.description || 'ไม่มีคำอธิบาย'}</div>
+                    <div class="product-price">${chicken.price} บาท</div>
+                    <div class="product-stock">คงเหลือ: ${chicken.stock} ตัว</div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="changeQuantity(${chicken.id}, -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${chicken.id}" value="1" min="1" max="${chicken.stock}">
+                        <button class="quantity-btn" onclick="changeQuantity(${chicken.id}, 1)">+</button>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(${chicken.id})" 
+                            ${chicken.stock <= 0 ? 'disabled style="background: #bdc3c7; cursor: not-allowed;"' : ''}>
+                        ${chicken.stock <= 0 ? '❌ สินค้าหมด' : '🛒 เพิ่มในตะกร้า'}
+                    </button>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+            
+            console.log('✅ เรนเดอร์สินค้าเสร็จสิ้น');
+        }
+
+        // ฟังก์ชันใช้ข้อมูลตัวอย่าง
+        function useSampleData() {
+            console.log('🎯 ใช้ข้อมูลตัวอย่าง');
+            chickens = sampleChickens;
+            renderProducts();
+            
+            document.getElementById('productsError').style.display = 'none';
+            showNotification('ใช้ข้อมูลตัวอย่างสำเร็จ', 'success');
+        }
+
+        function changeQuantity(chickenId, change) {
+            const input = document.getElementById(`qty-${chickenId}`);
+            let newValue = parseInt(input.value) + change;
+            const chicken = chickens.find(c => c.id === chickenId);
+            
+            if (!chicken) return;
+            
+            if (newValue < 1) newValue = 1;
+            if (newValue > chicken.stock) {
+                newValue = chicken.stock;
+                showNotification(`มีสินค้าในสต็อกเพียง ${chicken.stock} ตัว`, 'error');
+            }
+            
+            input.value = newValue;
+        }
+
+        function addToCart(chickenId) {
+            const input = document.getElementById(`qty-${chickenId}`);
+            const quantity = parseInt(input.value);
+            const chicken = chickens.find(c => c.id === chickenId);
+
+            if (!chicken) {
+                showNotification('ไม่พบสินค้า', 'error');
+                return;
+            }
+
+            if (quantity > chicken.stock) {
+                showNotification('จำนวนสินค้าไม่พอ', 'error');
+                return;
+            }
+
+            if (quantity < 1) {
+                showNotification('กรุณาเลือกจำนวนสินค้าอย่างน้อย 1 ตัว', 'error');
+                return;
+            }
+
+            // ตรวจสอบว่ามีในตะกร้าแล้วหรือไม่
+            const existingItem = cart.find(item => item.chicken.id === chickenId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    chicken: chicken,
+                    quantity: quantity
+                });
+            }
+
+            saveCart();
+            renderCart();
+            
+            // แสดงการยืนยัน
+            showNotification(`เพิ่ม ${chicken.name} จำนวน ${quantity} ตัว ในตะกร้าแล้ว`, 'success');
+            
+            // รีเซ็ตจำนวน
+            input.value = 1;
+        }
+
+        function removeFromCart(chickenId) {
+            const item = cart.find(item => item.chicken.id === chickenId);
+            if (item) {
+                cart = cart.filter(item => item.chicken.id !== chickenId);
+                saveCart();
+                renderCart();
+                showNotification(`ลบ ${item.chicken.name} ออกจากตะกร้าแล้ว`, 'info');
+            }
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const checkoutButton = document.getElementById('checkoutButton');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🛒</div>
+                        <h3>ตะกร้าสินค้าว่าง</h3>
+                        <p>กรุณาเลือกสินค้าจากหน้ารายการสินค้า</p>
+                        <button class="cta-button" onclick="showSection('products')" style="margin-top: 1rem;">
+                            ดูสินค้าทั้งหมด
+                        </button>
+                    </div>
+                `;
+                cartTotal.textContent = 'รวม: 0 บาท';
+                checkoutButton.disabled = true;
+                return;
+            }
+
+            let total = 0;
+            let itemsHTML = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.chicken.price * item.quantity;
+                total += itemTotal;
+                
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <h3>${item.chicken.name}</h3>
+                            <p>${item.quantity} ตัว × ${item.chicken.price} บาท = ${itemTotal} บาท</p>
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${item.chicken.id})">
+                            🗑️ ลบ
+                        </button>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = itemsHTML;
+            cartTotal.textContent = `รวม: ${total} บาท`;
+            checkoutButton.disabled = false;
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function showCheckoutModal() {
+            if (cart.length === 0) {
+                showNotification('กรุณาเพิ่มสินค้าในตะกร้าก่อนสั่งซื้อ', 'error');
+                return;
+            }
+
+            // แสดงรายการสินค้าใน modal
+            let orderItemsHTML = '';
+            cart.forEach(item => {
+                const itemTotal = item.chicken.price * item.quantity;
+                orderItemsHTML += `
+                    <div style="margin: 0.5rem 0; padding: 0.5rem; background: white; border-radius: 3px;">
+                        ${item.chicken.name} - ${item.quantity} ตัว × ${item.chicken.price} บาท = ${itemTotal} บาท
+                    </div>
+                `;
+            });
+
+            const totalAmount = cart.reduce((sum, item) => sum + (item.chicken.price * item.quantity), 0);
+            orderItemsHTML += `
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd; font-weight: bold;">
+                    ยอดรวม: ${totalAmount} บาท
+                </div>
+            `;
+
+            document.getElementById('orderItemsList').innerHTML = orderItemsHTML;
+            document.getElementById('checkoutModal').style.display = 'block';
+            
+            // รีเซ็ตฟอร์ม
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+        }
+
+        function closeModal() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        async function submitOrder(event) {
+            event.preventDefault();
+            
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            
+            if (!customerName || !customerPhone) {
+                showNotification('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+                return;
+            }
+
+            if (cart.length === 0) {
+                showNotification('กรุณาเพิ่มสินค้าในตะกร้าก่อนสั่งซื้อ', 'error');
+                return;
+            }
+
+            const orderData = {
+                customerName: customerName,
+                customerPhone: customerPhone,
+                items: cart.map(item => ({
+                    chickenId: item.chicken.id,
+                    quantity: item.quantity
+                }))
+            };
+
+            try {
+                console.log('🚀 ส่งคำสั่งซื้อ:', orderData);
+                
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const responseText = await response.text();
+                console.log('📨 Response:', responseText);
+
+                if (!response.ok) {
+                    throw new Error(responseText || `HTTP error! status: ${response.status}`);
+                }
+
+                const order = JSON.parse(responseText);
+                console.log('✅ คำสั่งซื้อสำเร็จ:', order);
+                
+                showNotification(`✅ สั่งซื้อสำเร็จ! เลขที่คำสั่งซื้อ: ${order.id}`, 'success');
+                
+                // ล้างตะกร้า
+                cart = [];
+                saveCart();
+                renderCart();
+                closeModal();
+                
+                // ✅ แก้ไข: โหลดข้อมูลใหม่จาก server
+                await loadChickens();
+                await loadOrders(); // ✅ เพิ่ม: โหลดคำสั่งซื้อใหม่
+                
+                // ✅ แก้ไข: เปลี่ยนไปหน้ารายการคำสั่งซื้อ
+                showSection('orders');
+                
+            } catch (error) {
+                console.error('❌ Error submitting order:', error);
+                let errorMessage = error.message;
+                
+                // แปลงข้อความ error เป็นภาษาไทย
+                if (errorMessage.includes("stock") || errorMessage.includes("สต็อก")) {
+                    errorMessage = "สต็อกสินค้าไม่พอ กรุณาลดจำนวนหรือเลือกสินค้าอื่น";
+                } else if (errorMessage.includes("customerName") || errorMessage.includes("customerPhone")) {
+                    errorMessage = "กรุณากรอกข้อมูลลูกค้าให้ครบถ้วน";
+                } else if (errorMessage.includes("รายการสินค้าว่าง")) {
+                    errorMessage = "ไม่มีรายการสินค้าในคำสั่งซื้อ";
+                }
+                
+                showNotification(`❌ ไม่สามารถสั่งซื้อได้: ${errorMessage}`, 'error');
+            }
+        }
+
+        function renderOrders() {
+            const ordersList = document.getElementById('ordersList');
+            ordersList.innerHTML = '';
+
+            console.log('🎨 เรนเดอร์คำสั่งซื้อ, จำนวน:', orders.length);
+
+            if (!orders || orders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <h3>ยังไม่มีคำสั่งซื้อ</h3>
+                        <p>เมื่อคุณทำการสั่งซื้อสินค้า ประวัติจะปรากฏที่นี่</p>
+                        <button class="cta-button" onclick="showSection('products')" style="margin-top: 1rem;">
+                            เริ่มช้อปปิ้ง
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let ordersHTML = '';
+
+            // ✅ ไม่ต้องเรียงลำดับที่นี่เพราะเรียงใน sortOrders แล้ว
+
+            orders.forEach(order => {
+                if (!order) return;
+                
+                // แปลงวันที่ให้อ่านง่าย
+                let orderDate = 'ไม่ทราบวันที่';
+                try {
+                    const dateField = order.orderDate || order.createdAt || order.date;
+                    if (dateField) {
+                        const date = new Date(dateField);
+                        orderDate = date.toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                } catch (e) {
+                    console.log('Error parsing date:', e);
+                }
+
+                // กำหนดสีสถานะ
+                let statusColor = '#f39c12';
+                let statusText = '⏳ รอดำเนินการ';
+                
+                if (order.status === 'completed' || order.status === 'success') {
+                    statusColor = '#27ae60';
+                    statusText = '✅ สำเร็จ';
+                } else if (order.status === 'shipped' || order.status === 'shipping') {
+                    statusColor = '#3498db';
+                    statusText = '🚚 จัดส่งแล้ว';
+                } else if (order.status === 'cancelled' || order.status === 'canceled') {
+                    statusColor = '#e74c3c';
+                    statusText = '❌ ยกเลิก';
+                }
+
+                // ✅ แก้ไข: แสดงรายการสินค้าในคำสั่งซื้อ
+                let itemsHTML = '';
+                if (order.items && Array.isArray(order.items)) {
+                    itemsHTML = order.items.map(item => {
+                        const itemName = item.chickenName || item.name || 'ไม่ทราบชื่อสินค้า';
+                        const quantity = item.quantity || 0;
+                        const price = item.price || item.chickenPrice || 0;
+                        const itemTotal = quantity * price;
+                        
+                        return `
+                            <div class="order-item">
+                                <span>${itemName}</span>
+                                <span>${quantity} ตัว × ${price} บาท = ${itemTotal} บาท</span>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    itemsHTML = '<div>ไม่มีรายการสินค้า</div>';
+                }
+
+                ordersHTML += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <h3 style="margin: 0; color: #2c3e50;">คำสั่งซื้อ #${order.id || order.orderId || 'ไม่ทราบ'}</h3>
+                                <p style="margin: 0.25rem 0; color: #7f8c8d;">
+                                    📅 ${orderDate} | 👤 ${order.customerName || 'ไม่ทราบชื่อ'} | 📞 ${order.customerPhone || 'ไม่ระบุ'}
+                                </p>
+                            </div>
+                            <span style="background: ${statusColor}; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">
+                                ${statusText}
+                            </span>
+                        </div>
+                        
+                        <div class="order-items">
+                            ${itemsHTML}
+                        </div>
+                        
+                        <div style="text-align: right; font-size: 1.2rem; font-weight: bold; color: #e74c3c; margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #ecf0f1;">
+                            ยอดรวม: ${order.totalAmount || 0} บาท
+                        </div>
+                    </div>
+                `;
+            });
+
+            ordersList.innerHTML = ordersHTML;
+        }
+
+        // ฟังก์ชันแสดงการแจ้งเตือน
+        function showNotification(message, type = 'info') {
+            // ลบ notification เก่าออกก่อน
+            const oldNotifications = document.querySelectorAll('.custom-notification');
+            oldNotifications.forEach(notif => notif.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                z-index: 1001;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = '#27ae60';
+            } else if (type === 'error') {
+                notification.style.background = '#e74c3c';
+            } else {
+                notification.style.background = '#3498db';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 3000);
+        }
+
+        // ฟังก์ชันทดสอบ API
+        async function testOrdersAPI() {
+            try {
+                console.log('🧪 ทดสอบ Orders API...');
+                const response = await fetch(`${API_BASE}/orders`);
+                console.log('🧪 Test Response:', response);
+                console.log('🧪 Test Status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('🧪 Test Data:', data);
+                    alert(`✅ API ทำงานปกติ\nพบคำสั่งซื้อ: ${data.length} รายการ`);
+                } else {
+                    alert(`❌ API Error: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('🧪 Test Error:', error);
+                alert(`❌ Test Failed: ${error.message}`);
+            }
+        }
+
+        // ปิด modal เมื่อคลิกนอกพื้นที่
+        window.onclick = function(event) {
+            const modal = document.getElementById('checkoutModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // ป้องกันการส่งฟอร์มเมื่อกด Enter
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'INPUT') {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
